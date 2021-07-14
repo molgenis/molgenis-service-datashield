@@ -27,7 +27,7 @@ import org.molgenis.r.service.PackageService;
 import org.obiba.datashield.core.DSEnvironment;
 import org.obiba.datashield.core.DSMethod;
 import org.obiba.datashield.core.DSMethodType;
-import org.obiba.datashield.core.impl.PackagedFunctionDSMethod;
+import org.obiba.datashield.core.impl.DefaultDSMethod;
 import org.rosuda.REngine.Rserve.RConnection;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,8 +67,8 @@ class DataShieldEnvironmentHolderImplTest {
 
     var expected =
         asList(
-            new PackagedFunctionDSMethod("meanDS", "dsBase::meanDS", "dsBase", "1.2.3"),
-            new PackagedFunctionDSMethod("dim", "base::dim", "base", null));
+            new DefaultDSMethod("meanDS", "dsBase::meanDS", "dsBase", "1.2.3"),
+            new DefaultDSMethod("dim", "base::dim", "base", null));
     var actual = environment.getMethods();
 
     // TODO: workaround until equals method implemented in DSMethod:

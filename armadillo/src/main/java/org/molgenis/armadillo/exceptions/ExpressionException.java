@@ -3,8 +3,8 @@ package org.molgenis.armadillo.exceptions;
 import static java.lang.String.format;
 
 import org.obiba.datashield.core.NoSuchDSMethodException;
-import org.obiba.datashield.r.expr.ParseException;
-import org.obiba.datashield.r.expr.TokenMgrError;
+import org.obiba.datashield.r.expr.v2.ParseException;
+import org.obiba.datashield.r.expr.v2.TokenMgrError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

@@ -1,13 +1,13 @@
 package org.molgenis.armadillo.service;
 
-import java.io.StringReader;
 import org.molgenis.armadillo.exceptions.ExpressionException;
+import org.obiba.datashield.core.DSEnvironment;
 import org.obiba.datashield.core.DSMethodType;
 import org.obiba.datashield.core.NoSuchDSMethodException;
-import org.obiba.datashield.r.expr.DataShieldGrammar;
-import org.obiba.datashield.r.expr.ParseException;
 import org.obiba.datashield.r.expr.RScriptGenerator;
-import org.obiba.datashield.r.expr.TokenMgrError;
+import org.obiba.datashield.r.expr.v2.ParseException;
+import org.obiba.datashield.r.expr.v2.RScriptGeneratorV2;
+import org.obiba.datashield.r.expr.v2.TokenMgrError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,30 +17,26 @@ public class ExpressionRewriterImpl implements ExpressionRewriter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionRewriterImpl.class);
 
-  private final RScriptGenerator rAggregateScriptGenerator;
-  private final RScriptGenerator rAssignScriptGenerator;
+  private final DataShieldEnvironmentHolder environmentHolder;
 
   public ExpressionRewriterImpl(DataShieldEnvironmentHolder environmentHolder) {
-    this.rAggregateScriptGenerator =
-        new RScriptGenerator(environmentHolder.getEnvironment(DSMethodType.AGGREGATE));
-    this.rAssignScriptGenerator =
-        new RScriptGenerator(environmentHolder.getEnvironment(DSMethodType.ASSIGN));
+    this.environmentHolder = environmentHolder;
   }
 
   @Override
   public String rewriteAssign(String expression) {
-    return rewrite(expression, rAssignScriptGenerator);
+    return rewrite(expression, environmentHolder.getEnvironment(DSMethodType.ASSIGN));
   }
 
   @Override
   public String rewriteAggregate(String expression) {
-    return rewrite(expression, rAggregateScriptGenerator);
+    return rewrite(expression, environmentHolder.getEnvironment(DSMethodType.AGGREGATE));
   }
 
-  private String rewrite(String expression, RScriptGenerator rScriptGenerator) {
+  private String rewrite(String expression, DSEnvironment environment) {
     try {
-      DataShieldGrammar g = new DataShieldGrammar(new StringReader(expression));
-      String script = rScriptGenerator.toScript(g.root());
+      RScriptGenerator rScriptGenerator = new RScriptGeneratorV2(environment, expression);
+      String script = rScriptGenerator.toScript();
       LOGGER.debug("Generated script '{}'", script);
       return script;
     } catch (ParseException e) {
