@@ -9,10 +9,10 @@ GET http://localhost:8080/resources
 Authorization: Basic admin admin
 
 ###
-HEAD http://localhost:8080/resources/fdlk/project1/patient
+HEAD http://localhost:8080/resources/local/project/patient
 
 ###
-POST http://localhost:8080/load-resource?symbol=patientResource&resource=fdlk/project1/patient
+POST http://localhost:8080/load-resource?symbol=patientResource&resource=local/project/patient
 
 ###
 POST http://localhost:8080/symbols/patient

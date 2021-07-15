@@ -1,9 +1,21 @@
+####################### data upload ######################
+# First upload the data into the minio                   #
+# In the folder docker/test/data you can find 4 testsets #
+# Navigate to http://localhost:9000                      #
+# Login with molgenis:molgenis                           #
+# Create a bucket called shared-local                    #
+# Create a folder called 1_0_core_1_0                    #
+# Upload the core data into this folder                  #
+# Create a folder called 1_0_outcome_1_0                 #
+# Upload the core outcome data into this folder          #
+##########################################################
+
 ### authenticate with basic auth
 GET http://localhost:8080/tables
 Authorization: Basic admin admin
 
 ### Load core_nonrep
-POST http://localhost:8080/load-table?symbol=core_nonrep&table=gecko/2_1-core-1_0/nonrep&variables=child_id,cob_m
+POST http://localhost:8080/load-table?symbol=core_nonrep&table=local/1_0_core_1_0/nonrep&variables=child_id,cob_m
 
 ### check variable names of core_nonrep
 POST http://localhost:8080/execute
@@ -13,7 +25,7 @@ Accept: application/octet-stream
 colnamesDS("core_nonrep")
 
 ### Load outcome_nonrep
-POST http://localhost:8080/load-table?symbol=outcome_nonrep&table=gecko/1_1-outcome-1_0/nonrep&variables=child_id,asthma_ever_CHICOS,pets_preg
+POST http://localhost:8080/load-table?symbol=outcome_nonrep&table=local/1_0_outcome_1_0/nonrep&variables=child_id,asthma_ever_CHICOS,pets_preg
 
 ### check variable names of outcome_nonrep
 POST http://localhost:8080/execute
@@ -23,7 +35,7 @@ Accept: application/octet-stream
 colnamesDS("outcome_nonrep")
 
 ### Load core_yearlyrep
-POST http://localhost:8080/load-table?symbol=core_yearlyrep&table=gecko/2_1-core-1_0/yearlyrep&variables=child_id,age_years,dogs_,cats_,pets_
+POST http://localhost:8080/load-table?symbol=core_yearlyrep&table=local/1_0_core_1_0/yearlyrep&variables=child_id,age_years,dogs_,cats_,pets_
 
 ### check variable names of core_yearlyrep
 POST http://localhost:8080/execute

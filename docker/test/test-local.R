@@ -6,6 +6,8 @@
 # Create a bucket called shared-local             #
 # Create a folder called 1_0_core_1_0             #
 # Upload the data into this folder                #
+# Create a folder called 1_0_outcome_1_0          #
+# Upload the core outcome data into this folder   #
 ###################################################
 
 ################### data analysis #################
