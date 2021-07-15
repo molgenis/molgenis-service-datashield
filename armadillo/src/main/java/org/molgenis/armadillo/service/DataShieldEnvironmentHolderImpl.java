@@ -16,7 +16,7 @@ import org.molgenis.r.service.PackageService;
 import org.obiba.datashield.core.DSEnvironment;
 import org.obiba.datashield.core.DSMethod;
 import org.obiba.datashield.core.DSMethodType;
-import org.obiba.datashield.core.impl.PackagedFunctionDSMethod;
+import org.obiba.datashield.core.impl.DefaultDSMethod;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +71,7 @@ public class DataShieldEnvironmentHolderImpl implements DataShieldEnvironmentHol
     }
   }
 
-  private Stream<PackagedFunctionDSMethod> toDsMethods(
-      ImmutableSet<String> methods, RPackage rPackage) {
+  private Stream<DefaultDSMethod> toDsMethods(ImmutableSet<String> methods, RPackage rPackage) {
     if (methods != null) {
       validatePackageWhitelisted(rPackage.name());
       return methods.stream().map(method -> toDsMethod(rPackage, method));
@@ -86,16 +85,16 @@ public class DataShieldEnvironmentHolderImpl implements DataShieldEnvironmentHol
    * the current package, or with a name and a package ('dim=base::dim'), meaning they are part of
    * the package described in the string.
    */
-  private static PackagedFunctionDSMethod toDsMethod(RPackage rPackage, String method) {
+  private static DefaultDSMethod toDsMethod(RPackage rPackage, String method) {
     if (method.contains("=")) {
       return toExternalDsMethod(method);
     } else {
-      return new PackagedFunctionDSMethod(
+      return new DefaultDSMethod(
           method, format("%s::%s", rPackage.name(), method), rPackage.name(), rPackage.version());
     }
   }
 
-  private static PackagedFunctionDSMethod toExternalDsMethod(String method) {
+  private static DefaultDSMethod toExternalDsMethod(String method) {
     String[] nonDsBaseMethod = method.split("=");
     if (nonDsBaseMethod.length != 2) {
       throw new IllegalRMethodStringException(method);
@@ -106,8 +105,7 @@ public class DataShieldEnvironmentHolderImpl implements DataShieldEnvironmentHol
       throw new IllegalRMethodStringException(method);
     }
 
-    return new PackagedFunctionDSMethod(
-        nonDsBaseMethod[0], nonDsBaseMethod[1], functionParts[0], null);
+    return new DefaultDSMethod(nonDsBaseMethod[0], nonDsBaseMethod[1], functionParts[0], null);
   }
 
   private void validatePackageWhitelisted(String rPackageName) {
@@ -116,8 +114,7 @@ public class DataShieldEnvironmentHolderImpl implements DataShieldEnvironmentHol
     }
   }
 
-  private boolean validateMethodIsUnique(
-      PackagedFunctionDSMethod dsMethod, DSEnvironment environment) {
+  private boolean validateMethodIsUnique(DefaultDSMethod dsMethod, DSEnvironment environment) {
     if (environment.getMethods().stream()
         .map(DSMethod::getName)
         .anyMatch(name -> dsMethod.getName().equals(name))) {
@@ -126,7 +123,7 @@ public class DataShieldEnvironmentHolderImpl implements DataShieldEnvironmentHol
     return true;
   }
 
-  private void addToEnvironment(PackagedFunctionDSMethod dsMethod, DSEnvironment environment) {
+  private void addToEnvironment(DefaultDSMethod dsMethod, DSEnvironment environment) {
     environment.addOrUpdate(dsMethod);
     LOGGER.info(
         "Registered method '{}' to '{}' environment",

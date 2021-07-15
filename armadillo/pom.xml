@@ -3,7 +3,7 @@
   <parent>
     <artifactId>armadillo-service</artifactId>
     <groupId>org.molgenis</groupId>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
@@ -11,6 +11,8 @@
   <artifactId>armadillo</artifactId>
 
   <properties>
+    <org.obiba.datashield.ds4j-version>2.0.0</org.obiba.datashield.ds4j-version>
+
     <dockerfile.repository>registry.hub.docker.com/molgenis/${project.artifactId}</dockerfile.repository>
     <dockerfile.tag>${project.version}</dockerfile.tag>
   </properties>
@@ -19,7 +21,7 @@
     <repository>
       <id>obiba</id>
       <name>obiba</name>
-      <url>https://dl.bintray.com/obiba/maven</url>
+      <url>https://obiba.jfrog.io/artifactory/libs-release-local/</url>
     </repository>
   </repositories>
 
@@ -27,17 +29,17 @@
     <dependency>
       <groupId>org.obiba.datashield</groupId>
       <artifactId>ds4j-core</artifactId>
-      <version>1.0.2</version>
+      <version>${org.obiba.datashield.ds4j-version}</version>
     </dependency>
     <dependency>
       <groupId>org.obiba.datashield</groupId>
       <artifactId>ds4j-r</artifactId>
-      <version>1.0.2</version>
+      <version>${org.obiba.datashield.ds4j-version}</version>
     </dependency>
     <dependency>
       <groupId>org.molgenis</groupId>
       <artifactId>r</artifactId>
-      <version>0.0.18-SNAPSHOT</version>
+      <version>0.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>

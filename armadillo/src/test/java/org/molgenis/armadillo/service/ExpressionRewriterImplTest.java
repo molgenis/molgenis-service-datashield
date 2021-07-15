@@ -15,7 +15,8 @@ import org.obiba.datashield.core.DSEnvironment;
 import org.obiba.datashield.core.DSMethod;
 import org.obiba.datashield.core.DSMethodType;
 import org.obiba.datashield.core.NoSuchDSMethodException;
-import org.obiba.datashield.core.impl.PackagedFunctionDSMethod;
+import org.obiba.datashield.core.impl.DefaultDSMethod;
+import org.obiba.datashield.r.expr.v1.ParseException;
 
 @ExtendWith(MockitoExtension.class)
 class ExpressionRewriterImplTest {
@@ -26,25 +27,25 @@ class ExpressionRewriterImplTest {
   @Mock private DSEnvironment mockEnvironment;
 
   @BeforeEach
-  void beforeEach() {
+  void beforeEach() throws ParseException {
     when(environmentHolder.getEnvironment(any(DSMethodType.class))).thenReturn(mockEnvironment);
     expressionRewriter = new ExpressionRewriterImpl(environmentHolder);
   }
 
   @Test
   void testRewriteAssignDsBase() {
-    DSMethod meanDS = new PackagedFunctionDSMethod("meanDS", "dsBase::meanDS");
+    DSMethod meanDS = new DefaultDSMethod("meanDS", "dsBase::meanDS");
     when(mockEnvironment.getMethod("meanDS")).thenReturn(meanDS);
     when(mockEnvironment.getMethodType()).thenReturn(DSMethodType.ASSIGN);
-    assertEquals("dsBase::meanDS(D$age)", expressionRewriter.rewriteAssign("meanDS(D$age)"));
+    assertEquals(".ASSIGN$meanDS(D$age)", expressionRewriter.rewriteAssign("meanDS(D$age)"));
   }
 
   @Test
   void testRewriteAssignNonDsBase() {
-    DSMethod dim = new PackagedFunctionDSMethod("dim", "base::dim");
+    DSMethod dim = new DefaultDSMethod("dim", "base::dim");
     when(mockEnvironment.getMethod("dim")).thenReturn(dim);
     when(mockEnvironment.getMethodType()).thenReturn(DSMethodType.ASSIGN);
-    assertEquals("base::dim(x, y)", expressionRewriter.rewriteAssign("dim(x, y)"));
+    assertEquals(".ASSIGN$dim(x, y)", expressionRewriter.rewriteAssign("dim(x, y)"));
   }
 
   @Test
@@ -56,24 +57,26 @@ class ExpressionRewriterImplTest {
 
   @Test
   void testRewriteAggregateDsBase() {
-    DSMethod dim = new PackagedFunctionDSMethod("scatterPlotDs", "dsBase::scatterPlotDs");
+    DSMethod dim = new DefaultDSMethod("scatterPlotDs", "dsBase::scatterPlotDs");
     when(mockEnvironment.getMethod("scatterPlotDs")).thenReturn(dim);
     when(mockEnvironment.getMethodType()).thenReturn(DSMethodType.AGGREGATE);
     assertEquals(
-        "dsBase::scatterPlotDs(D$age, D$potatoes_a_day)",
+        ".AGGREGATE$scatterPlotDs(D$age, D$potatoes_a_day)",
         expressionRewriter.rewriteAggregate("scatterPlotDs(D$age, D$potatoes_a_day)"));
   }
 
   @Test
   void testRewriteAggregateNonDsBase() {
-    DSMethod dim = new PackagedFunctionDSMethod("is.character", "base::is.character");
+    DSMethod dim = new DefaultDSMethod("is.character", "base::is.character");
     when(mockEnvironment.getMethod("is.character")).thenReturn(dim);
     when(mockEnvironment.getMethodType()).thenReturn(DSMethodType.AGGREGATE);
-    assertEquals("base::is.character(3)", expressionRewriter.rewriteAggregate("is.character(3)"));
+    assertEquals(
+        ".AGGREGATE$is.character(3)", expressionRewriter.rewriteAggregate("is.character(3)"));
   }
 
   @Test
   void testRewriteFaultyExpression() {
-    assertThrows(ExpressionException.class, () -> expressionRewriter.rewriteAggregate("meanDS(="));
+    assertThrows(
+        ExpressionException.class, () -> expressionRewriter.rewriteAggregate(".ASSIGN$meanDS(="));
   }
 }

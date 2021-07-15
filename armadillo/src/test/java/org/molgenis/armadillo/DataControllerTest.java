@@ -48,8 +48,8 @@ import org.molgenis.armadillo.service.ExpressionRewriter;
 import org.molgenis.r.model.RPackage;
 import org.obiba.datashield.core.DSEnvironment;
 import org.obiba.datashield.core.DSMethod;
-import org.obiba.datashield.core.impl.PackagedFunctionDSMethod;
-import org.obiba.datashield.r.expr.ParseException;
+import org.obiba.datashield.core.impl.DefaultDSMethod;
+import org.obiba.datashield.r.expr.v2.ParseException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
 import org.rosuda.REngine.REXPRaw;
@@ -255,7 +255,7 @@ class DataControllerTest {
   @WithMockUser
   void getAssignMethods() throws Exception {
     when(environments.getEnvironment(ASSIGN)).thenReturn(assignEnvironment);
-    DSMethod method = new PackagedFunctionDSMethod("meanDS", "dsBase::meanDS", "dsBase", "1.2.3");
+    DSMethod method = new DefaultDSMethod("meanDS", "dsBase::meanDS", "dsBase", "1.2.3");
     when(assignEnvironment.getMethods()).thenReturn(List.of(method));
 
     mockMvc
@@ -279,7 +279,7 @@ class DataControllerTest {
   @WithMockUser
   void getAggregateMethods() throws Exception {
     when(environments.getEnvironment(AGGREGATE)).thenReturn(assignEnvironment);
-    DSMethod method = new PackagedFunctionDSMethod("ls", "base::ls", "base", null);
+    DSMethod method = new DefaultDSMethod("ls", "base::ls", "base", null);
     when(assignEnvironment.getMethods()).thenReturn(List.of(method));
 
     mockMvc

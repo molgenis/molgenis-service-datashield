@@ -1,3 +1,13 @@
+####################### data upload ######################
+# First upload the data into the minio                   #
+# In the folder docker/test/data you can find 4 testsets #
+# Navigate to http://localhost:9000                      #
+# Login with molgenis:molgenis                           #
+# Create a bucket called shared-local                    #
+# Create a folder called 1_0_core_1_0                    #
+# Upload the data into this folder                       #
+##########################################################
+
 ###
 GET http://localhost:8080/v3/api-docs
 
@@ -10,20 +20,20 @@ GET http://localhost:8080/tables
 Authorization: Basic admin admin
 
 ###
-HEAD http://localhost:8080/tables/gecko/lc_core_gecko_2_1/iris
+HEAD http://localhost:8080/tables/local/1_0_core_1_0/nonrep
 
 ###
-POST http://localhost:8080/load-table?symbol=D&table=chicago/crime/arrests
+POST http://localhost:8080/load-table?symbol=D&table=local/1_0_core_1_0/nonrep
 
 ###
-POST http://localhost:8080/load-table?symbol=D&table=chicago/crime/crimes&variables=Arrest
+POST http://localhost:8080/load-table?symbol=D&table=local/1_0_core_1_0/nonrep&variables=agebirth_m_d
 
 ###
 POST http://localhost:8080/debug
 Accept: application/json
 Content-Type: text/plain
 
-dsBase::meanDS(D$Arrest)$EstimatedMean
+dsBase::meanDS(D$agebirth_m_d)$EstimatedMean
 
 ###
 GET http://localhost:8080/symbols
@@ -33,7 +43,7 @@ POST http://localhost:8080/execute
 Accept: application/octet-stream
 Content-Type: text/plain
 
-meanDS(D$Arrest)
+meanDS(D$agebirth_m_d)
 
 ###
 DELETE http://localhost:8080/symbols/D
